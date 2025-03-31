@@ -91,7 +91,7 @@ module wrapper(
    assign CPU_RESETN = &count1 | &count2;
    counter cnt1(
                 .en(SW[0]),
-                .clk(),
+                .clk(CLKOUT0),
                 .rst(),
                 
                 .cnt(count1)
@@ -99,12 +99,14 @@ module wrapper(
          
 	counter cnt2(
                 .en(SW[0]),
-                .clk(),
+                .clk(CLKOUT1),
                 .rst(),
                 
                 .cnt(count2)
                 );				
 			
-    
+     cnt2hex c2x (
+     .clk_100MHz_i()
+     );
     
 endmodule
