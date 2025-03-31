@@ -33,6 +33,7 @@ module wrapper(
     output CE,
     output CF,
     output CG,
+    output DP,
     output [6:0] AN
     
     );
@@ -106,7 +107,12 @@ module wrapper(
                 );				
 			
      cnt2hex c2x (
-     .clk_100MHz_i()
+     .clk_100MHz_i(CLK100MHZ),
+     .rst_n(CPU_RESETN),
+     .cnt_val_1_i(count1[33:16]),
+     .cnt_val_1_i(count2[33:16]),
+     .HEX_o({DP, CG, CF, CE}),
+     .AN_o(AN)
      );
     
 endmodule
