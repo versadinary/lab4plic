@@ -77,15 +77,33 @@ module wrapper(
       .CLKOUT5(CLKOUT5),   // 1-bit output: CLKOUT5
       // Feedback Clocks: 1-bit (each) output: Clock feedback ports
       .CLKFBOUT(CLKFBOUT), // 1-bit output: Feedback clock
-      .LOCKED(LOCKED),     // 1-bit output: LOCK
+      .LOCKED(~LED[0]),     // 1-bit output: LOCK
       .CLKIN1(CLKIN1),     // 1-bit input: Input clock
       // Control Ports: 1-bit (each) input: PLL control ports
-      .PWRDWN(PWRDWN),     // 1-bit input: Power-down
+      .PWRDWN(SW[6]),     // 1-bit input: Power-down
       .RST(RST),           // 1-bit input: Reset
       // Feedback Clocks: 1-bit (each) input: Clock feedback ports
       .CLKFBIN(CLKFBIN)    // 1-bit input: Feedback clock
    );
-					
+   // assign LED[0] = ~LOCKED;
+   logic [33:0] count1;
+   logic [33:0] count2;
+   assign CPU_RESETN = &count1 | &count2;
+   counter cnt1(
+                .en(SW[0]),
+                .clk(),
+                .rst(),
+                
+                .cnt(count1)
+                );
+         
+	counter cnt2(
+                .en(SW[0]),
+                .clk(),
+                .rst(),
+                
+                .cnt(count2)
+                );				
 			
     
     
