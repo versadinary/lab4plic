@@ -24,7 +24,7 @@ module wrapper(
     input logic [15:0] SW,
     
     output logic [15:0] LED,
-    output CPU_RESETN,
+    input CPU_RESETN,
     output CA,
     output CB,
     output CC,
