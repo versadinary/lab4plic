@@ -21,7 +21,6 @@
 
 module wrapper(
     input logic CLK100MHZ,
-    input logic SW7,
     input logic [15:0] SW,
     
     output logic [15:0] LED,
@@ -34,7 +33,7 @@ module wrapper(
     output CF,
     output CG,
     output DP,
-    output [6:0] AN
+    output [7:0] AN
     
     );
     
@@ -81,7 +80,7 @@ module wrapper(
       .LOCKED(~LED[0]),     // 1-bit output: LOCK
       .CLKIN1(CLKIN1),     // 1-bit input: Input clock
       // Control Ports: 1-bit (each) input: PLL control ports
-      .PWRDWN(SW[6]),     // 1-bit input: Power-down
+      .PWRDWN(SW[7]),     // 1-bit input: Power-down
       .RST(RST),           // 1-bit input: Reset
       // Feedback Clocks: 1-bit (each) input: Clock feedback ports
       .CLKFBIN(CLKFBIN)    // 1-bit input: Feedback clock
@@ -93,7 +92,7 @@ module wrapper(
    counter cnt1(
                 .en(SW[0]),
                 .clk(CLKOUT0),
-                .rst(),
+                .rst('b0),
                 
                 .cnt(count1)
                 );
@@ -101,7 +100,7 @@ module wrapper(
 	counter cnt2(
                 .en(SW[0]),
                 .clk(CLKOUT1),
-                .rst(),
+                .rst('b0),
                 
                 .cnt(count2)
                 );				
@@ -109,9 +108,9 @@ module wrapper(
      cnt2hex c2x (
      .clk_100MHz_i(CLK100MHZ),
      .rst_n(CPU_RESETN),
-     .cnt_val_1_i(count1[33:16]),
-     .cnt_val_1_i(count2[33:16]),
-     .HEX_o({DP, CG, CF, CE}),
+     .cnt_val_1_i(count1[33:18]),
+     .cnt_val_2_i(count2[33:18]),
+     .HEX_o({DP, CG, CF, CE, CD, CB, CA}),
      .AN_o(AN)
      );
     
