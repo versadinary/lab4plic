@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+`timescale 1ns / 1ns
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -41,7 +41,7 @@ module wrapper(
       .BANDWIDTH("OPTIMIZED"),  // OPTIMIZED, HIGH, LOW
       .CLKFBOUT_MULT(8),        // Multiply value for all CLKOUT, (2-64)
       .CLKFBOUT_PHASE(0.0),     // Phase offset in degrees of CLKFB, (-360.000-360.000).
-      .CLKIN1_PERIOD(0.0),      // Input clock period in ns to ps resolution (i.e. 33.333 is 30 MHz).
+      .CLKIN1_PERIOD(10.0),      // Input clock period in ns to ps resolution (i.e. 33.333 is 30 MHz).
       // CLKOUT0_DIVIDE - CLKOUT5_DIVIDE: Divide amount for each CLKOUT (1-128)
       .CLKOUT0_DIVIDE(2),
       .CLKOUT1_DIVIDE(4),
@@ -77,7 +77,7 @@ module wrapper(
       .CLKOUT5(CLKOUT5),   // 1-bit output: CLKOUT5
       // Feedback Clocks: 1-bit (each) output: Clock feedback ports
       .CLKFBOUT(CLKFBOUT), // 1-bit output: Feedback clock
-      .LOCKED(~LED[0]),     // 1-bit output: LOCK
+      .LOCKED(lock),     // 1-bit output: LOCK
       .CLKIN1(CLK100MHZ),     // 1-bit input: Input clock
       // Control Ports: 1-bit (each) input: PLL control ports
       .PWRDWN(SW[7]),     // 1-bit input: Power-down
@@ -88,6 +88,7 @@ module wrapper(
    // assign LED[0] = ~LOCKED;
    logic [33:0] count1;
    logic [33:0] count2;
+   assign LED[0] = lock; 
    assign CPU_RESETN = &count1 | &count2;
    counter cnt1(
                 .en(SW[0]),
