@@ -37,16 +37,18 @@ module wrapper(
     
     );
     
+    logic lock;
+    
     PLLE2_BASE #(
       .BANDWIDTH("OPTIMIZED"),  // OPTIMIZED, HIGH, LOW
-      .CLKFBOUT_MULT(8),        // Multiply value for all CLKOUT, (2-64)
+      .CLKFBOUT_MULT(2),  // 39       // Multiply value for all CLKOUT, (2-64)
       .CLKFBOUT_PHASE(0.0),     // Phase offset in degrees of CLKFB, (-360.000-360.000).
       // Please fix this 
-      .CLKIN1_PERIOD(10.0),      // Input clock period in ns to ps resolution (i.e. 33.333 is 30 MHz).
+      .CLKIN1_PERIOD(10),      // Input clock period in ns to ps resolution (i.e. 33.333 is 30 MHz).
       
       // CLKOUT0_DIVIDE - CLKOUT5_DIVIDE: Divide amount for each CLKOUT (1-128)
-      .CLKOUT0_DIVIDE(2),
-      .CLKOUT1_DIVIDE(4),
+      .CLKOUT0_DIVIDE(1), // 60
+      .CLKOUT1_DIVIDE(1), // 39
       .CLKOUT2_DIVIDE(1),
       .CLKOUT3_DIVIDE(1),
       .CLKOUT4_DIVIDE(1),
@@ -60,7 +62,7 @@ module wrapper(
       .CLKOUT5_DUTY_CYCLE(0.5),
       // CLKOUT0_PHASE - CLKOUT5_PHASE: Phase offset for each CLKOUT (-360.000-360.000).
       .CLKOUT0_PHASE(0.0),
-      .CLKOUT1_PHASE(0.0),
+      .CLKOUT1_PHASE(70.0),
       .CLKOUT2_PHASE(0.0),
       .CLKOUT3_PHASE(0.0),
       .CLKOUT4_PHASE(0.0),
@@ -83,19 +85,22 @@ module wrapper(
       .CLKIN1(CLK100MHZ),     // 1-bit input: Input clock
       // Control Ports: 1-bit (each) input: PLL control ports
       .PWRDWN(SW[7]),     // 1-bit input: Power-down
-      .RST(RST),           // 1-bit input: Reset
+      .RST(rst),           // 1-bit input: Reset
       // Feedback Clocks: 1-bit (each) input: Clock feedback ports
       .CLKFBIN(CLKFBIN)    // 1-bit input: Feedback clock
    );
    // assign LED[0] = ~LOCKED;
    logic [33:0] count1;
    logic [33:0] count2;
+   assign lck = lock;
    assign LED[0] = lock; 
+   assign f1 = CLKOUT0;
+   assign f2 = CLKOUT1;
    assign CPU_RESETN = &count1 | &count2;
    counter cnt1(
                 .en(SW[0]),
                 .clk(CLKOUT0),
-                .rst('b0),
+                .rst(CPU_RESETN),
                 
                 .cnt(count1)
                 );
@@ -103,7 +108,7 @@ module wrapper(
 	counter cnt2(
                 .en(SW[0]),
                 .clk(CLKOUT1),
-                .rst('b0),
+                .rst(CPU_RESETN),
                 
                 .cnt(count2)
                 );				
