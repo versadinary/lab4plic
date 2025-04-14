@@ -22,7 +22,7 @@
 module wrapper(
     input logic CLK100MHZ,
     input logic [15:0] SW,
-    output CPU_RESETN,
+    input CPU_RESETN,
     
     output logic [15:0] LED,
     output CA,
