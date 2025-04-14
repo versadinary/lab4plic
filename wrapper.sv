@@ -18,15 +18,11 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-/* 
-m = 21, d = 1, o1 = 54, o2 = 35
-m = 42, d = 2, o1 = 54, o2 = 35
-m = 63, d = 3, o1 = 54, o2 = 35
-*/
+
 module wrapper(
     input logic CLK100MHZ,
     input logic [15:0] SW,
-    input CPU_RESETN,
+    output CPU_RESETN,
     
     output logic [15:0] LED,
     output CA,
@@ -42,17 +38,25 @@ module wrapper(
     );
     
     logic lock;
+    /*
+    for m in range():
+        fro n in range*(:
+            for o1 inr a    
+            
+                if (800 < 100 * n / m < 1200 and abs(100 * n / m / o1) < 0.01)
+    
+    */
     
     PLLE2_BASE #(
       .BANDWIDTH("OPTIMIZED"),  // OPTIMIZED, HIGH, LOW
-      .CLKFBOUT_MULT(39),  // 39       // Multiply value for all CLKOUT, (2-64)
+      .CLKFBOUT_MULT(63),  // 39       // Multiply value for all CLKOUT, (2-64)
       .CLKFBOUT_PHASE(0.0),     // Phase offset in degrees of CLKFB, (-360.000-360.000).
       // Please fix this 
       .CLKIN1_PERIOD(10),      // Input clock period in ns to ps resolution (i.e. 33.333 is 30 MHz).
       
       // CLKOUT0_DIVIDE - CLKOUT5_DIVIDE: Divide amount for each CLKOUT (1-128)
-      .CLKOUT0_DIVIDE(65), // 60
-      .CLKOUT1_DIVIDE(100), // 39
+      .CLKOUT0_DIVIDE(23), // 39
+      .CLKOUT1_DIVIDE(15), // 60
       .CLKOUT2_DIVIDE(1),
       .CLKOUT3_DIVIDE(1),
       .CLKOUT4_DIVIDE(1),
@@ -71,7 +75,7 @@ module wrapper(
       .CLKOUT3_PHASE(0.0),
       .CLKOUT4_PHASE(0.0),
       .CLKOUT5_PHASE(0.0),
-      .DIVCLK_DIVIDE(1),        // Master division value, (1-56)
+      .DIVCLK_DIVIDE(7),        // Master division value, (1-56)
       .REF_JITTER1(0.0),        // Reference input jitter in UI, (0.000-0.999).
       .STARTUP_WAIT("FALSE")    // Delay DONE until PLL Locks, ("TRUE"/"FALSE")
    )
@@ -97,7 +101,7 @@ module wrapper(
    logic [33:0] count1;
    logic [33:0] count2;
    assign lck = lock;
-   assign LED[0] = lock; 
+   assign LED[0] = ~lock; 
    assign f1 = CLKOUT0;
    assign f2 = CLKOUT1;
    assign CPU_RESETN = &count1 | &count2;
@@ -122,7 +126,7 @@ module wrapper(
      .rst_n(CPU_RESETN),
      .cnt_val_1_i(count1[33:18]),
      .cnt_val_2_i(count2[33:18]),
-     .HEX_o({DP, CG, CF, CE, CD, CB, CA}),
+     .HEX_o({DP, CG, CF, CE, CD, CC, CB, CA}),
      .AN_o(AN)
      );
     
